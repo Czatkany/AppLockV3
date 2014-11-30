@@ -36,7 +36,7 @@ import static com.example.tomi.applockv3.R.layout.activity_locker;
 
 
 public class LockerActivity extends Activity {
-
+    //HEYHO
     private ArrayList<String> appName = new ArrayList<String>();
     private ArrayList<String> packName = new ArrayList<String>();
     private ArrayList<CheckBox> checkList = new ArrayList<CheckBox>();
