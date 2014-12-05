@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -36,10 +37,10 @@ import static com.example.tomi.applockv3.R.layout.activity_locker;
 
 
 public class LockerActivity extends Activity {
-    //HEYHO
     private ArrayList<String> appName = new ArrayList<String>();
     private ArrayList<String> packName = new ArrayList<String>();
     private ArrayList<CheckBox> checkList = new ArrayList<CheckBox>();
+    private ArrayList<String> selectedApps = new ArrayList<String>();
     private ListView Apps;
     private CheckBox Check;
     private Button okButton;
@@ -49,6 +50,7 @@ public class LockerActivity extends Activity {
     private boolean codeSetted = false;
     private EditText editText;
     private Context context = LockerActivity.this;
+    private AppListAdapter adapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         code = new String();
@@ -65,9 +67,8 @@ public class LockerActivity extends Activity {
         okButtonListener(codeSetted);
         codeButtonListener();
         exitButtonListener();
-        AppListAdapter adapter = new AppListAdapter(getBaseContext(), android.R.layout.simple_list_item_1, appName, checkList);
+        adapter = new AppListAdapter(context, android.R.layout.simple_list_item_1, appName, checkList);
         Apps.setAdapter(adapter);
-
     }
     private void buildView(int resource) //This function build the view from the xml-s
     {
@@ -118,7 +119,18 @@ public class LockerActivity extends Activity {
                         }
                     });
                     AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                    //alertDialog.show();
+
+                    selectedApps = adapter.getSelectedApps();
+
+                    if(selectedApps.size() > 0)
+                    {
+                        //  Toast.makeText(context, selectedApps.l, Toast.LENGTH_SHORT).show();
+                    }
+
+                    Intent i = new Intent(LockerActivity.this, AppFinderService.class);
+                    // i.putStringArrayListExtra("packageNames",selectedApps);
+                    LockerActivity.this.startService(i);
 
                 }
             }
@@ -161,7 +173,7 @@ public class LockerActivity extends Activity {
                 builder.setNegativeButton("Mégse", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
+                        dialog.cancel();
                     }
                 });
 
@@ -177,9 +189,12 @@ public class LockerActivity extends Activity {
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    //finish();
-                System.exit(0);
 
+                Intent i = new Intent(LockerActivity.this, AppFinderService.class);
+                LockerActivity.this.stopService(i);
+
+                //System.exit(0);
+                finish();
             }
         });
     }
